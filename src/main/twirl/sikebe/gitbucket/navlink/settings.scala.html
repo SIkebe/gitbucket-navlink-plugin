@@ -1,0 +1,26 @@
+@(name: String, path: String, isAdmin: Boolean)(implicit context: gitbucket.core.controller.Context)
+@gitbucket.core.html.main("NavLink Setting", None){
+@sikebe.gitbucket.navlink.html.sidebar("settings", isAdmin){
+<div class="content-wrapper">
+    <div class="content body">
+        <form id="form" method="post" action="@context.path/navlink/settings" validate="true">
+            <div class="panel panel-default">
+                <div class="panel-heading strong">Settings for NavLink</div>
+                <div class="panel-body">
+                    <fieldset class="form-group">
+                        <label for="globalMenuName" class="strong">Global Menu Name:</label>
+                        <input type="text" name="globalMenuName" id="globalMenuName" class="form-control" value="@name"/>
+                    </fieldset>
+                    <fieldset class="border-top form-group">
+                        <label for="globalMenuPath" class="strong">Relative Path (e.g. <code>navlink/settings</code>):</label>
+                        <input type="text" name="globalMenuPath" id="globalMenuPath" class="form-control" value="@path"/>
+                    </fieldset>
+                    <div class="align-right" style="margin-top: 20px;">
+                        <input type="submit" class="btn btn-success" value="Apply changes"/>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+}}
