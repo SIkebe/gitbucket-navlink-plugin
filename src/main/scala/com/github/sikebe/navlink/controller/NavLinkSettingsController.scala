@@ -24,7 +24,7 @@ trait NavLinkSettingsControllerBase extends ControllerBase {
 
   get("/navlink/settings")(adminOnly {
     val settings = loadNavLinkSettings()
-    html.settings(settings.globalMenuName, settings.globalMenuPath, isAdmin = true)
+    html.settings(settings.globalMenuName, settings.globalMenuPath, isAdmin = true, flash.get("info"))
   })
 
   post("/navlink/settings", settingsForm)(adminOnly { form =>
@@ -35,6 +35,7 @@ trait NavLinkSettingsControllerBase extends ControllerBase {
 
     saveNavLinkSettings(form)
     reload(request.getServletContext(), loadSystemSettings(), request2Session(request).conn)
+    flash += "info" -> "Successfully updated NavLink."
     redirect("/navlink/settings")
   })
 }

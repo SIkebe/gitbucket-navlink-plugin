@@ -1,8 +1,9 @@
-@(name: String, path: String, isAdmin: Boolean)(implicit context: gitbucket.core.controller.Context)
+@(name: String, path: String, isAdmin: Boolean, info: Option[Any])(implicit context: gitbucket.core.controller.Context)
 @gitbucket.core.html.main("NavLink Setting", None){
 @sikebe.gitbucket.navlink.html.sidebar("settings", isAdmin){
 <div class="content-wrapper">
     <div class="content body">
+        @gitbucket.core.helper.html.information(info)
         <form id="form" method="post" action="@context.path/navlink/settings" validate="true">
             <div class="panel panel-default">
                 <div class="panel-heading strong">Settings for NavLink</div>
