@@ -8,7 +8,10 @@ class Plugin extends gitbucket.core.plugin.Plugin with NavLinkSettingsService {
   override val pluginId: String = "navlink"
   override val pluginName: String = "NavLink Plugin"
   override val description: String = "Adding NavLinks"
-  override val versions: List[Version] = List(new Version("1.0.0"))
+  override val versions: List[Version] = List(
+    new Version("1.0.0"),
+    new Version("1.0.1")
+    )
 
   override val controllers = Seq(
     "/*" -> new NavLinkSettingsController()
