@@ -24,7 +24,7 @@ trait NavLinkSettingsControllerBase extends ControllerBase {
 
   get("/navlink/settings")(adminOnly {
     val settings = loadNavLinkSettings()
-    html.settings(settings.globalMenuName, settings.globalMenuPath, isAdmin = true, flash.get("info"))
+    html.settings(settings, isAdmin = true, flash.get("info"))
   })
 
   post("/navlink/settings", settingsForm)(adminOnly { form =>

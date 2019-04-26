@@ -19,16 +19,22 @@ trait NavLinkSettingsService {
       }
     }
 
-  def loadNavLinkSettings(): NavLinkSettings =
+  def loadNavLinkSettings(): Seq[NavLinkSettings] =
     defining(new java.util.Properties()) { props =>
       if (NavLinkConf.exists) {
         using(new java.io.FileInputStream(NavLinkConf)) { in =>
           props.load(in)
         }
       }
-      NavLinkSettings(
-        getValue[String](props, GlobalMenuName, ""),
-        getValue[String](props, GlobalMenuPath, "")
+      Seq(
+        NavLinkSettings(
+          getValue[String](props, GlobalMenuName, ""),
+          getValue[String](props, GlobalMenuPath, "")
+        ),
+        NavLinkSettings(
+          getValue[String](props, GlobalMenuName, ""),
+          getValue[String](props, GlobalMenuPath, "")
+        )
       )
     }
 }
