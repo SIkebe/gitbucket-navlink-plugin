@@ -1,7 +1,7 @@
 # gitbucket-navlink-plugin
 GitBucket plugin which adds a link to navigation bar
 
-![NavLink settings](images/navlink.png)
+![NavLink settings](images/navlink.gif)
 
 ## Compatibility
 
