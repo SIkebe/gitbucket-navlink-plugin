@@ -5,6 +5,7 @@ import java.io.File
 import gitbucket.core.util.Directory._
 import gitbucket.core.util.SyntaxSugars._
 import NavLinkSettingsService._
+import scala.util.Using
 
 trait NavLinkSettingsService {
 
@@ -14,7 +15,7 @@ trait NavLinkSettingsService {
     defining(new java.util.Properties()) { props =>
       props.setProperty(GlobalMenuName, settings.globalMenuName)
       props.setProperty(GlobalMenuPath, settings.globalMenuPath)
-      using(new java.io.FileOutputStream(NavLinkConf)) { out =>
+      Using.resource(new java.io.FileOutputStream(NavLinkConf)) { out =>
         props.store(out, null)
       }
     }
@@ -22,7 +23,7 @@ trait NavLinkSettingsService {
   def loadNavLinkSettings(): NavLinkSettings =
     defining(new java.util.Properties()) { props =>
       if (NavLinkConf.exists) {
-        using(new java.io.FileInputStream(NavLinkConf)) { in =>
+        Using.resource(new java.io.FileInputStream(NavLinkConf)) { in =>
           props.load(in)
         }
       }

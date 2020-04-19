@@ -35,7 +35,7 @@ trait NavLinkSettingsControllerBase extends ControllerBase {
 
     saveNavLinkSettings(form)
     reload(request.getServletContext(), loadSystemSettings(), request2Session(request).conn)
-    flash += "info" -> "Successfully updated NavLink."
+    flash.update("info", "Successfully updated NavLink.")
     redirect("/navlink/settings")
   })
 }
