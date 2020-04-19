@@ -1,4 +1,4 @@
-# gitbucket-navlink-plugin
+# gitbucket-navlink-plugin ![Scala CI](https://github.com/SIkebe/gitbucket-navlink-plugin/workflows/Scala%20CI/badge.svg)
 GitBucket plugin which adds a link to navigation bar
 
 ![NavLink settings](images/navlink.gif)
