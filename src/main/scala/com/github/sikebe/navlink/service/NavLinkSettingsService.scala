@@ -15,17 +15,13 @@ trait NavLinkSettingsService {
     defining(new java.util.Properties()) { props =>
       props.setProperty(GlobalMenuName, settings.globalMenuName)
       props.setProperty(GlobalMenuPath, settings.globalMenuPath)
-      Using.resource(new java.io.FileOutputStream(NavLinkConf)) { out =>
-        props.store(out, null)
-      }
+      Using.resource(new java.io.FileOutputStream(NavLinkConf)) { out => props.store(out, null) }
     }
 
   def loadNavLinkSettings(): NavLinkSettings =
     defining(new java.util.Properties()) { props =>
       if (NavLinkConf.exists) {
-        Using.resource(new java.io.FileInputStream(NavLinkConf)) { in =>
-          props.load(in)
-        }
+        Using.resource(new java.io.FileInputStream(NavLinkConf)) { in => props.load(in) }
       }
       NavLinkSettings(
         getValue[String](props, GlobalMenuName, ""),
