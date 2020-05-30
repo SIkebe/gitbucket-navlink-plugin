@@ -4,14 +4,16 @@ on: [push, pull_request]
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        java: [8, 11, 14]
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up JDK 11
+    - name: Set up JDK
       uses: actions/setup-java@v1
       with:
-        java-version: 11
+        java-version: ${{ matrix.java }}
     - name: Build
       run: sbt assembly
