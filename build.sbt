@@ -2,5 +2,5 @@ name := "gitbucket-navlink-plugin"
 organization := "com.github.sikebe"
 version := "1.1.0"
 scalaVersion := "2.13.3"
-gitbucketVersion := "4.33.0"
+gitbucketVersion := "4.34.0"
 scalacOptions := Seq("-deprecation")
