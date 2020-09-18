@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+  gitbucket:
+    image: gitbucket/gitbucket:4
+    restart: always
+    ports:
+      - 8080:8080
+    volumes:
+     - ./docker:/gitbucket
+    depends_on:
+      - db
+    environment:
+      - GITBUCKET_DB_URL=jdbc:postgresql://db/gitbucket
+      - GITBUCKET_DB_USER=gitbucket
+      - GITBUCKET_DB_PASSWORD=gitbucket
+      - GITBUCKET_BASE_URL=http://localhost:8080
+      - GITBUCKET_HOME=./gitbucket
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; sleep 10; java -jar /opt/gitbucket.war'
+
+  db:
+    image: postgres:12.4-alpine
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=gitbucket
+      - POSTGRES_USER=gitbucket
+      - POSTGRES_PASSWORD=gitbucket
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --locale=C
