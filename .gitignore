@@ -28,3 +28,6 @@ project/plugins/project/
 
 # Visual Studio Code
 .vscode
+
+# Docker
+docker
