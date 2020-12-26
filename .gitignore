@@ -2,7 +2,7 @@
 *.log
 *~
 
-# sbt specific
+# sbt
 dist/*
 target/
 lib_managed/
@@ -10,17 +10,24 @@ src_managed/
 project/boot/
 project/plugins/project/
 
-# Scala-IDE specific
+# Scala-IDE
 .scala_dependencies
 .classpath
 .project
 .cache
 .settings
 
-# IntelliJ specific
+# IntelliJ
 .idea/
 .idea_modules/
 
-# Ensime
-.ensime
-.ensime_cache/
+# Metals
+.metals
+.bloop
+**/metals.sbt
+
+# Visual Studio Code
+.vscode
+
+# Docker
+docker
