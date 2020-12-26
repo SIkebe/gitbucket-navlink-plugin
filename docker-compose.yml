@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 
 services:
   gitbucket:
@@ -19,7 +19,7 @@ services:
     command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; sleep 10; java -jar /opt/gitbucket.war'
 
   db:
-    image: postgres:12.4-alpine
+    image: postgres:13.1-alpine
     restart: always
     ports:
       - "5432:5432"
