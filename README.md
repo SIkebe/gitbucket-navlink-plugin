@@ -7,7 +7,8 @@ GitBucket plugin which adds a link to navigation bar
 
 Plugin version | GitBucket version
 :--------------|:--------------------
-1.1.X          | 4.32.0 -
+1.2.X          | 4.35.0 -
+1.1.X          | 4.32.0 - 4.34.0
 1.0.1          | 4.23.1 - 4.31.2
 
 ## Development
