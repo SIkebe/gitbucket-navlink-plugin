@@ -19,5 +19,8 @@ jobs:
     - name: Run Docker containers
       run: docker-compose up -d
 
-    - name: Build
+    - name: Format
       run: sbt scalafmtSbtCheck scalafmtCheck
+
+    - name: Build
+      run: sbt assembly
