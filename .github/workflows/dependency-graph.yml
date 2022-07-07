@@ -1,0 +1,18 @@
+name: Submit Dependency Graph
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  submit-graph:
+    name: Submit Dependency Graph
+    runs-on: ubuntu-20.04
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+    permissions:
+      contents: write # this permission is needed to submit the dependency graph
+    steps:
+      - uses: actions/checkout@v3
+      - uses: scalacenter/sbt-dependency-graph-action@v1
