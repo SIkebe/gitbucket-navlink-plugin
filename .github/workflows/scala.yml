@@ -23,7 +23,7 @@ jobs:
         distribution: adopt
 
     - name: Run Docker containers
-      run: docker-compose up -d
+      run: docker compose up -d
 
     - name: Build
       run: sbt scalafmtSbtCheck scalafmtCheck
