@@ -14,5 +14,11 @@ jobs:
     permissions:
       contents: write # this permission is needed to submit the dependency graph
     steps:
-      - uses: actions/checkout@v5
-      - uses: scalacenter/sbt-dependency-graph-action@v3.1.0
+      - name: Setup sbt launcher
+        uses: sbt/setup-sbt@v1
+
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Submit Dependency Graph
+        uses: scalacenter/sbt-dependency-graph-action@v3.1.0
