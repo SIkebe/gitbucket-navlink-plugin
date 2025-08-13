@@ -2,25 +2,28 @@ name: Scala CI
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
     branches:
       - master
       - develop
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         java: [8, 11, 17]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
+
     - name: Set up JDK
       uses: actions/setup-java@v4
       with:
         java-version: ${{ matrix.java }}
         distribution: adopt
+
+    - name: Setup sbt launcher
+      uses: sbt/setup-sbt@v1
 
     - name: Run Docker containers
       run: docker compose up -d
