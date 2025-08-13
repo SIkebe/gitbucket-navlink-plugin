@@ -8,7 +8,7 @@ on:
 jobs:
   submit-graph:
     name: Submit Dependency Graph
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ github.token }}
     permissions:
