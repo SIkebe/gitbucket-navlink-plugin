@@ -2,7 +2,6 @@ name: Scala CI
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
     branches:
       - master
       - develop
@@ -16,11 +15,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v5
+
     - name: Set up JDK
       uses: actions/setup-java@v4
       with:
         java-version: ${{ matrix.java }}
         distribution: adopt
+
+    - name: Setup sbt launcher
+      uses: sbt/setup-sbt@v1
 
     - name: Run Docker containers
       run: docker compose up -d
