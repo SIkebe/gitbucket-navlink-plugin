@@ -77,7 +77,7 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
     await page.click('input[type="submit"]');
     
     // Wait for save confirmation
-    await page.waitForTimeout(1000);
+    await expect(page.locator('.alert-success, .alert-info')).toBeVisible({ timeout: 10000 });
     
     // Navigate to home page
     await page.goto('/');
@@ -119,8 +119,8 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
     await page.fill('input[name="globalMenuPath"]', uniquePath);
     await page.click('input[type="submit"]');
     
-    // Wait for save
-    await page.waitForTimeout(1000);
+    // Wait for save confirmation
+    await expect(page.locator('.alert-success, .alert-info')).toBeVisible({ timeout: 10000 });
     
     // Navigate away and back
     await page.goto('/');

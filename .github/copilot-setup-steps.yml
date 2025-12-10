@@ -5,7 +5,10 @@ steps:
   - name: Install SBT (Scala Build Tool)
     run: |
       # Install SBT 1.6.2 which is required for this project
-      curl -L https://github.com/sbt/sbt/releases/download/v1.6.2/sbt-1.6.2.tgz | tar xz -C /tmp
+      # Using official SBT release from GitHub
+      # For production use, consider using package managers like apt or sdkman for better security
+      SBT_VERSION=1.6.2
+      curl -L "https://github.com/sbt/sbt/releases/download/v${SBT_VERSION}/sbt-${SBT_VERSION}.tgz" | tar xz -C /tmp
       echo 'export PATH=/tmp/sbt/bin:$PATH' >> ~/.bashrc
       export PATH=/tmp/sbt/bin:$PATH
       
