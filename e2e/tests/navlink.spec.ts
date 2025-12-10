@@ -21,7 +21,7 @@ async function login(page: Page, username: string = 'root', password: string = '
   await page.locator('input[name="password"]').fill(password);
   
   // Submit login form
-  await page.locator('button[type="submit"]:has-text("Sign in")').click();
+  await page.locator('input[type="submit"], button[type="submit"]').click();
   
   // Wait for redirect to dashboard
   await page.waitForURL(/\/(?:root)?$/);
