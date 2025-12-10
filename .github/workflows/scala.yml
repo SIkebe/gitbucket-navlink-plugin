@@ -29,7 +29,9 @@ jobs:
       uses: sbt/setup-sbt@v1
 
     - name: Run Docker containers
-      run: docker compose up -d
+      run: |
+        mkdir -p docker/plugins
+        docker compose up -d
 
     - name: Build
       run: sbt scalafmtSbtCheck scalafmtCheck
@@ -65,7 +67,6 @@ jobs:
       run: |
         export GITBUCKET_HOME=$(pwd)/docker
         sbt assembly
-        mkdir -p docker/plugins
         cp target/scala-2.13/gitbucket-navlink-plugin-*.jar docker/plugins/
 
     - name: Restart GitBucket to load plugin

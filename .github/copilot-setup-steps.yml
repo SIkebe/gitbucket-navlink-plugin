@@ -19,6 +19,9 @@ steps:
     run: |
       cd "${GITHUB_WORKSPACE:-$(pwd)}"
       
+      # Create plugins directory before starting Docker to avoid permission issues
+      mkdir -p docker/plugins
+      
       # Start GitBucket and PostgreSQL containers
       docker compose up -d
       
@@ -40,9 +43,6 @@ steps:
       # Set GITBUCKET_HOME environment variable
       echo "export GITBUCKET_HOME=$(pwd)/docker" >> ~/.bashrc
       export GITBUCKET_HOME=$(pwd)/docker
-      
-      # Create plugins directory
-      mkdir -p docker/plugins
 
   - name: Install E2E Test Dependencies
     run: |
