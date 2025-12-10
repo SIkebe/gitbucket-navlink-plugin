@@ -38,7 +38,7 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
     await page.goto('/navlink/settings');
     
     // Verify settings page loaded
-    await expect(page.locator('h1:has-text("NavLink Setting")')).toBeVisible();
+    await expect(page.locator('.panel-heading:has-text("Settings for NavLink")')).toBeVisible();
     await expect(page.locator('input[name="globalMenuName"]')).toBeVisible();
     await expect(page.locator('input[name="globalMenuPath"]')).toBeVisible();
   });
