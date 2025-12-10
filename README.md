@@ -26,7 +26,7 @@ This project includes a `.github/copilot-setup-steps.yml` file that automaticall
 
 ```bash
 # Initialize GitBucket and PostgreSQL containers
-docker-compose up -d
+docker compose up -d
 
 # Setup GITBUCKET_HOME
 # export GITBUCKET_HOME=/home/sikebe/git/github/gitbucket-navlink-plugin/docker

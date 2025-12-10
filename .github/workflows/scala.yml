@@ -23,7 +23,7 @@ jobs:
       uses: actions/setup-java@v5
       with:
         java-version: ${{ matrix.java }}
-        distribution: adopt
+        distribution: temurin
 
     - name: Setup sbt launcher
       uses: sbt/setup-sbt@v1
@@ -47,7 +47,7 @@ jobs:
       uses: actions/setup-java@v5
       with:
         java-version: 17
-        distribution: adopt
+        distribution: temurin
 
     - name: Setup sbt launcher
       uses: sbt/setup-sbt@v1
@@ -72,7 +72,6 @@ jobs:
       run: |
         docker compose restart gitbucket
         echo "Waiting for GitBucket to restart..."
-        sleep 20
         timeout 120 bash -c 'until curl -f http://localhost:8080 > /dev/null 2>&1; do sleep 5; done'
         echo "GitBucket restarted!"
 

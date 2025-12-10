@@ -17,7 +17,7 @@ steps:
 
   - name: Start Docker Compose Services
     run: |
-      cd /home/runner/work/gitbucket-navlink-plugin/gitbucket-navlink-plugin
+      cd "${GITHUB_WORKSPACE:-$(pwd)}"
       
       # Start GitBucket and PostgreSQL containers
       docker compose up -d
@@ -35,7 +35,7 @@ steps:
 
   - name: Setup Environment Variables
     run: |
-      cd /home/runner/work/gitbucket-navlink-plugin/gitbucket-navlink-plugin
+      cd "${GITHUB_WORKSPACE:-$(pwd)}"
       
       # Set GITBUCKET_HOME environment variable
       echo "export GITBUCKET_HOME=$(pwd)/docker" >> ~/.bashrc
@@ -46,7 +46,7 @@ steps:
 
   - name: Install E2E Test Dependencies
     run: |
-      cd /home/runner/work/gitbucket-navlink-plugin/gitbucket-navlink-plugin/e2e
+      cd "${GITHUB_WORKSPACE:-$(pwd)}/e2e"
       
       # Install Node.js dependencies
       npm install
@@ -56,7 +56,7 @@ steps:
 
   - name: Build and Install Plugin
     run: |
-      cd /home/runner/work/gitbucket-navlink-plugin/gitbucket-navlink-plugin
+      cd "${GITHUB_WORKSPACE:-$(pwd)}"
       export PATH=/tmp/sbt/bin:$PATH
       export GITBUCKET_HOME=$(pwd)/docker
       
@@ -71,7 +71,6 @@ steps:
       
       # Wait for GitBucket to restart
       echo "Waiting for GitBucket to restart..."
-      sleep 20
       for i in {1..60}; do
         if curl -f http://localhost:8080 > /dev/null 2>&1; then
           echo "GitBucket restarted successfully!"
@@ -81,5 +80,5 @@ steps:
       done
 
 environment:
-  GITBUCKET_HOME: /home/runner/work/gitbucket-navlink-plugin/gitbucket-navlink-plugin/docker
+  GITBUCKET_HOME: ${GITHUB_WORKSPACE:-$(pwd)}/docker
   PATH: /tmp/sbt/bin:$PATH

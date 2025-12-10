@@ -14,14 +14,14 @@ async function login(page: Page, username: string = 'root', password: string = '
   }
 
   // Click Sign in link
-  await page.click('a:has-text("Sign in")');
+  await page.locator('a:has-text("Sign in")').click();
   
   // Fill in credentials
-  await page.fill('input[name="userName"]', username);
-  await page.fill('input[name="password"]', password);
+  await page.locator('input[name="userName"]').fill(username);
+  await page.locator('input[name="password"]').fill(password);
   
   // Submit login form
-  await page.click('button[type="submit"]:has-text("Sign in")');
+  await page.locator('button[type="submit"]:has-text("Sign in")').click();
   
   // Wait for redirect to dashboard
   await page.waitForURL(/\/(?:root)?$/);
@@ -51,11 +51,11 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
     const testMenuName = 'Test Menu';
     const testMenuPath = 'navlink/settings';
     
-    await page.fill('input[name="globalMenuName"]', testMenuName);
-    await page.fill('input[name="globalMenuPath"]', testMenuPath);
+    await page.locator('input[name="globalMenuName"]').fill(testMenuName);
+    await page.locator('input[name="globalMenuPath"]').fill(testMenuPath);
     
     // Submit the form
-    await page.click('input[type="submit"]');
+    await page.locator('input[type="submit"]').click();
     
     // Wait for success message
     await expect(page.locator('.alert-success, .alert-info')).toBeVisible({ timeout: 10000 });
@@ -72,9 +72,9 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
     const menuName = 'Documentation';
     const menuPath = 'navlink/settings';
     
-    await page.fill('input[name="globalMenuName"]', menuName);
-    await page.fill('input[name="globalMenuPath"]', menuPath);
-    await page.click('input[type="submit"]');
+    await page.locator('input[name="globalMenuName"]').fill(menuName);
+    await page.locator('input[name="globalMenuPath"]').fill(menuPath);
+    await page.locator('input[type="submit"]').click();
     
     // Wait for save confirmation
     await expect(page.locator('.alert-success, .alert-info')).toBeVisible({ timeout: 10000 });
@@ -97,11 +97,11 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
     await page.goto('/navlink/settings');
     
     // Clear the fields
-    await page.fill('input[name="globalMenuName"]', '');
-    await page.fill('input[name="globalMenuPath"]', '');
+    await page.locator('input[name="globalMenuName"]').fill('');
+    await page.locator('input[name="globalMenuPath"]').fill('');
     
     // Try to submit empty form
-    await page.click('input[type="submit"]');
+    await page.locator('input[type="submit"]').click();
     
     // Form should have validation preventing submission or showing errors
     // The exact behavior depends on the form validation implementation
@@ -115,9 +115,9 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
     const uniquePath = 'navlink/settings';
     
     await page.goto('/navlink/settings');
-    await page.fill('input[name="globalMenuName"]', uniqueName);
-    await page.fill('input[name="globalMenuPath"]', uniquePath);
-    await page.click('input[type="submit"]');
+    await page.locator('input[name="globalMenuName"]').fill(uniqueName);
+    await page.locator('input[name="globalMenuPath"]').fill(uniquePath);
+    await page.locator('input[type="submit"]').click();
     
     // Wait for save confirmation
     await expect(page.locator('.alert-success, .alert-info')).toBeVisible({ timeout: 10000 });
