@@ -55,7 +55,9 @@ jobs:
       uses: sbt/setup-sbt@v1
 
     - name: Run Docker containers
-      run: docker compose up -d
+      run: |
+        mkdir -p docker/plugins
+        docker compose up -d
 
     - name: Wait for GitBucket to be ready
       run: |
