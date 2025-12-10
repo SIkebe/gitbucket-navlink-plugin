@@ -34,10 +34,6 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     needs: build
-    if: matrix.java == '17'
-    strategy:
-      matrix:
-        java: [17]
 
     steps:
     - uses: actions/checkout@v6
@@ -45,7 +41,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v5
       with:
-        java-version: ${{ matrix.java }}
+        java-version: 17
         distribution: adopt
 
     - name: Setup sbt launcher

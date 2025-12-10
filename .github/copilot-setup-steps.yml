@@ -1,0 +1,82 @@
+name: GitBucket NavLink Plugin Setup
+description: Setup steps for developing the GitBucket NavLink plugin
+
+steps:
+  - name: Install SBT (Scala Build Tool)
+    run: |
+      # Install SBT 1.6.2 which is required for this project
+      curl -L https://github.com/sbt/sbt/releases/download/v1.6.2/sbt-1.6.2.tgz | tar xz -C /tmp
+      echo 'export PATH=/tmp/sbt/bin:$PATH' >> ~/.bashrc
+      export PATH=/tmp/sbt/bin:$PATH
+      
+      # Verify installation
+      sbt --version
+
+  - name: Start Docker Compose Services
+    run: |
+      cd /home/runner/work/gitbucket-navlink-plugin/gitbucket-navlink-plugin
+      
+      # Start GitBucket and PostgreSQL containers
+      docker compose up -d
+      
+      # Wait for GitBucket to be ready
+      echo "Waiting for GitBucket to start..."
+      for i in {1..60}; do
+        if curl -f http://localhost:8080 > /dev/null 2>&1; then
+          echo "GitBucket is ready!"
+          break
+        fi
+        echo "Attempt $i/60..."
+        sleep 5
+      done
+
+  - name: Setup Environment Variables
+    run: |
+      cd /home/runner/work/gitbucket-navlink-plugin/gitbucket-navlink-plugin
+      
+      # Set GITBUCKET_HOME environment variable
+      echo "export GITBUCKET_HOME=$(pwd)/docker" >> ~/.bashrc
+      export GITBUCKET_HOME=$(pwd)/docker
+      
+      # Create plugins directory
+      mkdir -p docker/plugins
+
+  - name: Install E2E Test Dependencies
+    run: |
+      cd /home/runner/work/gitbucket-navlink-plugin/gitbucket-navlink-plugin/e2e
+      
+      # Install Node.js dependencies
+      npm install
+      
+      # Install Playwright browsers
+      npx playwright install chromium --with-deps
+
+  - name: Build and Install Plugin
+    run: |
+      cd /home/runner/work/gitbucket-navlink-plugin/gitbucket-navlink-plugin
+      export PATH=/tmp/sbt/bin:$PATH
+      export GITBUCKET_HOME=$(pwd)/docker
+      
+      # Build the plugin
+      sbt assembly
+      
+      # Copy plugin to GitBucket plugins directory
+      cp target/scala-2.13/gitbucket-navlink-plugin-*.jar docker/plugins/
+      
+      # Restart GitBucket to load the plugin
+      docker compose restart gitbucket
+      
+      # Wait for GitBucket to restart
+      echo "Waiting for GitBucket to restart..."
+      sleep 20
+      for i in {1..60}; do
+        if curl -f http://localhost:8080 > /dev/null 2>&1; then
+          echo "GitBucket restarted successfully!"
+          break
+        fi
+        sleep 5
+      done
+
+environment:
+  GITBUCKET_HOME: /home/runner/work/gitbucket-navlink-plugin/gitbucket-navlink-plugin/docker
+  PATH: /tmp/sbt/bin:$PATH

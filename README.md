@@ -13,6 +13,17 @@ Plugin version | GitBucket version
 
 ## Development
 
+### GitHub Copilot
+
+This project includes a `.github/copilot-setup-steps.yml` file that automatically sets up the development environment when using GitHub Copilot Coding Agent. The setup includes:
+- Installing SBT (Scala Build Tool)
+- Starting Docker Compose services (GitBucket + PostgreSQL)
+- Setting up environment variables
+- Installing E2E test dependencies
+- Building and installing the plugin
+
+### Manual Setup
+
 ```bash
 # Initialize GitBucket and PostgreSQL containers
 docker-compose up -d
