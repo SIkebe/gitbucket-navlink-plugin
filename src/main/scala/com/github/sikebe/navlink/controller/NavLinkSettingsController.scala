@@ -2,7 +2,6 @@ package com.github.sikebe.navlink.controller
 
 import gitbucket.core.controller.ControllerBase
 import gitbucket.core.util.AdminAuthenticator
-import org.scalatra.forms._
 import sikebe.gitbucket.navlink.html
 import com.github.sikebe.navlink.service.NavLinkSettingsService
 import com.github.sikebe.navlink.service.NavLinkSettingsService._
@@ -17,25 +16,22 @@ class NavLinkSettingsController
 trait NavLinkSettingsControllerBase extends ControllerBase {
   self: NavLinkSettingsService with AdminAuthenticator =>
 
-  val settingsForm: MappingValueType[NavLinkSettings] = mapping(
-    "globalMenuName" -> text(required, maxlength(200)),
-    "globalMenuPath" -> text(required, maxlength(200))
-  )(NavLinkSettings.apply)
-
   get("/navlink/settings")(adminOnly {
     val settings = loadNavLinkSettings()
-    html.settings(settings.globalMenuName, settings.globalMenuPath, isAdmin = true, flash.get("info"))
+    html.settings(settings.navLinks, MaxNavLinks, isAdmin = true, flash.get("info"))
   })
 
-  post("/navlink/settings", settingsForm)(adminOnly { form =>
-    assert(form.globalMenuName != null)
-    assert(!form.globalMenuName.isEmpty)
-    assert(form.globalMenuPath != null)
-    assert(!form.globalMenuPath.isEmpty)
-
-    saveNavLinkSettings(form)
+  post("/navlink/settings")(adminOnly {
+    val navLinks = (0 until MaxNavLinks).map { index =>
+      NavLinkItem(
+        params.getOrElse(s"navlinks[$index].globalMenuName", ""),
+        params.getOrElse(s"navlinks[$index].globalMenuPath", "")
+      )
+    }
+    val sanitized = sanitize(navLinks)
+    saveNavLinkSettings(NavLinkSettings(sanitized))
     reload(request.getServletContext(), loadSystemSettings(), request2Session(request).conn)
-    flash.update("info", "Successfully updated NavLink.")
+    flash.update("info", s"Successfully updated NavLink (up to $MaxNavLinks links).")
     redirect("/navlink/settings")
   })
 }

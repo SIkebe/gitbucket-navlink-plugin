@@ -12,17 +12,21 @@ class Plugin extends gitbucket.core.plugin.Plugin with NavLinkSettingsService {
     new Version("1.0.0"),
     new Version("1.0.1"),
     new Version("1.1.0"),
-    new Version("1.2.0")
+    new Version("1.2.0"),
+    new Version("1.3.0")
   )
 
   override val controllers = Seq(
     "/*" -> new NavLinkSettingsController()
   )
 
+  val navLinkSettings = loadNavLinkSettings()
+
   override val globalMenus =
-    Seq((_: Context) => Some(Link("navlink", navLinkSettings.globalMenuName, navLinkSettings.globalMenuPath)))
+    navLinkSettings.navLinks.zipWithIndex.map { case (navLink, index) =>
+      (_: Context) => Some(Link(s"navlink-$index", navLink.globalMenuName, navLink.globalMenuPath))
+    }
 
   override val systemSettingMenus = Seq((_: Context) => Some(Link("navlink", "NavLink", "navlink/settings")))
 
-  val navLinkSettings = loadNavLinkSettings()
 }
