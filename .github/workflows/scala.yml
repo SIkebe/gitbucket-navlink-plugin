@@ -20,13 +20,84 @@ jobs:
       uses: actions/setup-java@v5
       with:
         java-version: ${{ matrix.java }}
-        distribution: adopt
+        distribution: temurin
 
     - name: Setup sbt launcher
       uses: sbt/setup-sbt@v1
 
     - name: Run Docker containers
-      run: docker compose up -d
+      run: |
+        mkdir -p docker/plugins
+        docker compose up -d
 
     - name: Build
       run: sbt scalafmtSbtCheck scalafmtCheck
+
+  e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Set up JDK
+      uses: actions/setup-java@v5
+      with:
+        java-version: 17
+        distribution: temurin
+
+    - name: Setup sbt launcher
+      uses: sbt/setup-sbt@v1
+
+    - name: Run Docker containers
+      run: |
+        # Create plugins directory before starting Docker to avoid permission issues
+        # Docker creates the directory with root ownership if it doesn't exist
+        mkdir -p docker/plugins
+        docker compose up -d
+
+    - name: Wait for GitBucket to be ready
+      run: |
+        echo "Waiting for GitBucket to start..."
+        timeout 180 bash -c 'until curl -f http://localhost:8080 > /dev/null 2>&1; do sleep 5; done'
+        echo "GitBucket is ready!"
+
+    - name: Build and install plugin
+      run: |
+        export GITBUCKET_HOME=$(pwd)/docker
+        sbt assembly
+        cp target/scala-2.13/gitbucket-navlink-plugin-*.jar docker/plugins/
+
+    - name: Restart GitBucket to load plugin
+      run: |
+        docker compose restart gitbucket
+        echo "Waiting for GitBucket to restart..."
+        timeout 120 bash -c 'until curl -f http://localhost:8080 > /dev/null 2>&1; do sleep 5; done'
+        echo "GitBucket restarted!"
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '24'
+
+    - name: Install E2E test dependencies
+      run: |
+        cd e2e
+        npm install
+
+    - name: Install Playwright browsers
+      run: |
+        cd e2e
+        npx playwright install chromium --with-deps
+
+    - name: Run E2E tests
+      run: |
+        cd e2e
+        npm test
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: playwright-report
+        path: e2e/playwright-report/
+        retention-days: 7

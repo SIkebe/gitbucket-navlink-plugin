@@ -1,0 +1,19 @@
+{
+  "name": "gitbucket-navlink-plugin-e2e",
+  "version": "1.0.0",
+  "description": "E2E tests for GitBucket NavLink Plugin",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui"
+  },
+  "keywords": ["e2e", "testing", "gitbucket", "playwright"],
+  "author": "sikebe",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@types/node": "^20.17.0",
+    "typescript": "^5.7.0"
+  }
+}

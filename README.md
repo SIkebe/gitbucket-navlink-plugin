@@ -13,9 +13,20 @@ Plugin version | GitBucket version
 
 ## Development
 
+### GitHub Copilot
+
+This project includes a `.github/copilot-setup-steps.yml` file that automatically sets up the development environment when using GitHub Copilot Coding Agent. The setup includes:
+- Installing SBT (Scala Build Tool)
+- Starting Docker Compose services (GitBucket + PostgreSQL)
+- Setting up environment variables
+- Installing E2E test dependencies
+- Building and installing the plugin
+
+### Manual Setup
+
 ```bash
 # Initialize GitBucket and PostgreSQL containers
-docker-compose up -d
+docker compose up -d
 
 # Setup GITBUCKET_HOME
 # export GITBUCKET_HOME=/home/sikebe/git/github/gitbucket-navlink-plugin/docker
@@ -23,6 +34,19 @@ export GITBUCKET_HOME=<path-to-repository>/docker
 
 # Build and copy assembly to GITBUCKET_HOME/plugins/
 sbt install
+```
+
+## Testing
+
+### E2E Tests
+
+End-to-end tests are available using Playwright. See [e2e/README.md](e2e/README.md) for details.
+
+```bash
+# Run E2E tests
+cd e2e
+npm install
+npm test
 ```
 
 ## Build and deploy
