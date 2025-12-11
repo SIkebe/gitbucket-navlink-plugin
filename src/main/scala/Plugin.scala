@@ -1,5 +1,6 @@
 import com.github.sikebe.navlink.controller.NavLinkSettingsController
 import com.github.sikebe.navlink.service.NavLinkSettingsService
+import com.github.sikebe.navlink.service.NavLinkSettingsService.MaxNavLinks
 import gitbucket.core.controller.Context
 import gitbucket.core.plugin.Link
 import io.github.gitbucket.solidbase.model.Version
@@ -20,13 +21,14 @@ class Plugin extends gitbucket.core.plugin.Plugin with NavLinkSettingsService {
     "/*" -> new NavLinkSettingsController()
   )
 
-  val navLinkSettings = loadNavLinkSettings()
-
   override val globalMenus =
-    navLinkSettings.navLinks.zipWithIndex.map {
-      case (navLink, index) =>
-        (context: Context) =>
-          context.loginAccount.map(_ => Link(s"navlink-$index", navLink.globalMenuName, navLink.globalMenuPath))
+    (0 until MaxNavLinks).map { index =>
+      (context: Context) =>
+        context.loginAccount.flatMap { _ =>
+          loadNavLinkSettings().navLinks.lift(index).map { navLink =>
+            Link(s"navlink-$index", navLink.globalMenuName, navLink.globalMenuPath)
+          }
+        }
     }
 
   override val systemSettingMenus = Seq((_: Context) => Some(Link("navlink", "NavLink", "navlink/settings")))

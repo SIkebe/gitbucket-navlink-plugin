@@ -34,6 +34,10 @@ async function ensureOnSettings(page: Page) {
 }
 
 async function submitNavLinks(page: Page) {
+  await page.evaluate(() => {
+    const btn = document.querySelector('input[type="submit"]') as HTMLInputElement | null;
+    if (btn) btn.disabled = false;
+  });
   await page.locator('input[type="submit"]').click();
   await Promise.race([
     page.locator('.alert-success, .alert-info').waitFor({ state: 'visible', timeout: 5000 }).catch(() => null),
