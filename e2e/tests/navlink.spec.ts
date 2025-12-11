@@ -91,6 +91,31 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
     await expect(navLink.first()).toBeVisible();
   });
 
+  test('should hide NavLink from unauthenticated users', async ({ page, browser }) => {
+    await page.goto('/navlink/settings');
+
+    const menuName = `Documentation_${Date.now()}`;
+    const menuPath = 'navlink/settings';
+
+    await page.locator('input[name="globalMenuName"]').fill(menuName);
+    await page.locator('input[name="globalMenuPath"]').fill(menuPath);
+    await page.locator('input[type="submit"]').click();
+
+    await expect(page.locator('.alert-success, .alert-info')).toBeVisible({ timeout: 10000 });
+
+    await page.goto('/');
+    await page.reload();
+    await expect(page.locator(`a:has-text("${menuName}")`).first()).toBeVisible();
+
+    const guestContext = await browser.newContext({ baseURL: 'http://localhost:8080' });
+    const guestPage = await guestContext.newPage();
+    await guestPage.goto('/');
+
+    await expect(guestPage.locator(`a:has-text("${menuName}")`)).toHaveCount(0);
+
+    await guestContext.close();
+  });
+
   test('should handle empty form submission in NavLink settings', async ({ page }) => {
     await page.goto('/navlink/settings');
     

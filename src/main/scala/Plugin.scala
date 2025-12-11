@@ -20,7 +20,9 @@ class Plugin extends gitbucket.core.plugin.Plugin with NavLinkSettingsService {
   )
 
   override val globalMenus =
-    Seq((_: Context) => Some(Link("navlink", navLinkSettings.globalMenuName, navLinkSettings.globalMenuPath)))
+    Seq((context: Context) =>
+      context.loginAccount.map(_ => Link("navlink", navLinkSettings.globalMenuName, navLinkSettings.globalMenuPath))
+    )
 
   override val systemSettingMenus = Seq((_: Context) => Some(Link("navlink", "NavLink", "navlink/settings")))
 
