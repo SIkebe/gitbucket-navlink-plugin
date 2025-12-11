@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   gitbucket:
-    image: gitbucket/gitbucket:4.36.1
+    image: ghcr.io/gitbucket/gitbucket:4.44.0
     restart: always
     ports:
       - 8080:8080
