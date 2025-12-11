@@ -28,6 +28,11 @@ setup_steps:
         echo "Attempt $i/60..."
         sleep 5
       done
+      # Explicitly fail if GitBucket is not up after 60 attempts
+      if ! curl -f http://localhost:8080 > /dev/null 2>&1; then
+        echo "GitBucket failed to start"
+        exit 1
+      fi
 
   - name: Setup Environment Variables
     run: |
