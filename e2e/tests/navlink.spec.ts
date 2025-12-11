@@ -94,6 +94,10 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
   test('should validate required fields in NavLink settings', async ({ page }) => {
     await page.goto('/navlink/settings');
     
+    // Store initial values to restore later
+    const initialName = await page.locator('input[name="globalMenuName"]').inputValue();
+    const initialPath = await page.locator('input[name="globalMenuPath"]').inputValue();
+    
     // Clear the fields
     await page.locator('input[name="globalMenuName"]').fill('');
     await page.locator('input[name="globalMenuPath"]').fill('');
@@ -101,25 +105,34 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
     // Try to submit empty form
     await page.locator('input[type="submit"]').click();
     
+    // Wait a bit for any validation to occur
+    await page.waitForTimeout(500);
+    
     // Check that validation prevents submission:
     // 1. URL should still be on settings page (not redirected)
     const currentUrl = page.url();
     await expect(currentUrl).toContain('/navlink/settings');
     
     // 2. Check for validation error message or alert
-    // The form should either show an error message or use HTML5 validation
-    const errorMessage = page.locator('.alert-error, .alert-danger, .error');
+    const errorMessage = page.locator('.alert-error, .alert-danger, .error, .text-error');
     const hasErrorMessage = await errorMessage.count() > 0;
     
-    // 3. Check if HTML5 validation is being used (fields should have required attribute)
+    // 3. Check if HTML5 validation is being used
     const nameField = page.locator('input[name="globalMenuName"]');
     const pathField = page.locator('input[name="globalMenuPath"]');
     
-    // At least one validation mechanism should be present
-    const nameRequired = await nameField.evaluate((el: HTMLInputElement) => el.hasAttribute('required'));
-    const pathRequired = await pathField.evaluate((el: HTMLInputElement) => el.hasAttribute('required'));
+    const nameValidationMessage = await nameField.evaluate((el: HTMLInputElement) => el.validationMessage);
+    const pathValidationMessage = await pathField.evaluate((el: HTMLInputElement) => el.validationMessage);
+    const hasHtml5Validation = nameValidationMessage !== '' || pathValidationMessage !== '';
     
-    expect(hasErrorMessage || nameRequired || pathRequired).toBeTruthy();
+    // At least one validation mechanism should be present
+    expect(hasErrorMessage || hasHtml5Validation).toBeTruthy();
+    
+    // Restore original values for subsequent tests
+    await page.locator('input[name="globalMenuName"]').fill(initialName);
+    await page.locator('input[name="globalMenuPath"]').fill(initialPath);
+    await page.locator('input[type="submit"]').click();
+    await page.waitForURL(/.*\/navlink\/settings.*/);
   });
 
   test('should persist NavLink settings across page reloads', async ({ page }) => {
