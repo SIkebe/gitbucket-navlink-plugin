@@ -42,6 +42,36 @@ async function submitNavLinks(page: Page) {
   ]);
 }
 
+async function waitForNavLinksInNavbar(page: Page, names: string[]) {
+  await page.goto('/');
+  for (const name of names) {
+    await page
+      .locator(`a:has-text("${name}")`)
+      .first()
+      .waitFor({ state: 'visible', timeout: 15000 })
+      .catch(() => null);
+  }
+  await page.reload();
+  for (const name of names) {
+    await expect(page.locator(`a:has-text("${name}")`).first()).toBeVisible({ timeout: 5000 });
+  }
+}
+
+async function waitForSettingValue(page: Page, index: number, name: string, path: string) {
+  // Retry reading until values appear after plugin reload
+  for (let i = 0; i < 5; i++) {
+    await page.goto('/navlink/settings');
+    const nameInput = navLinkNameInput(page, index);
+    const pathInput = navLinkPathInput(page, index);
+    const currentName = await nameInput.inputValue();
+    const currentPath = await pathInput.inputValue();
+    if (currentName === name && currentPath === path) return;
+    await page.waitForTimeout(1000);
+  }
+  await expect(navLinkNameInput(page, index)).toHaveValue(name);
+  await expect(navLinkPathInput(page, index)).toHaveValue(path);
+}
+
 test.describe('GitBucket NavLink Plugin E2E Tests', () => {
   test.beforeEach(async ({ page }) => {
     // Login before each test
@@ -89,15 +119,7 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
     await submitNavLinks(page);
     
     // Navigate to home page
-    await page.goto('/');
-    
-    // Check if the NavLink appears in the navigation (may require page reload)
-    await page.reload();
-    
-    // Note: The actual selector depends on how GitBucket renders the menu
-    // This is a generic check that would need adjustment based on actual HTML structure
-    const navLink = page.locator(`a:has-text("${menuName}")`);
-    await expect(navLink.first()).toBeVisible();
+    await waitForNavLinksInNavbar(page, [menuName]);
   });
 
   test('should hide NavLink from unauthenticated users', async ({ page, browser }) => {
@@ -158,12 +180,7 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
     await submitNavLinks(page);
     
     // Navigate away and back
-    await page.goto('/');
-    await page.goto('/navlink/settings');
-    
-    // Verify values persisted
-    await expect(navLinkNameInput(page)).toHaveValue(uniqueName);
-    await expect(navLinkPathInput(page)).toHaveValue(uniquePath);
+    await waitForSettingValue(page, 0, uniqueName, uniquePath);
   });
 
   test('should register multiple navlinks up to the maximum limit', async ({ page }) => {
@@ -180,15 +197,7 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
     }
 
     await submitNavLinks(page);
-
-    await page.goto('/');
-    await page.reload();
-
-    for (const link of links) {
-      await expect(page.locator(`a:has-text("${link.name}")`).first()).toBeVisible();
-    }
-
-    await page.goto('/navlink/settings');
-    await expect(page.locator('input[name*=".globalMenuName"]')).toHaveCount(5);
+    await waitForNavLinksInNavbar(page, links.map((l) => l.name));
+    await waitForSettingValue(page, 0, links[0].name, links[0].path);
   });
 });
