@@ -75,3 +75,7 @@ setup_steps:
         fi
         sleep 5
       done
+      if ! curl -f http://localhost:8080 > /dev/null 2>&1; then
+        echo "Error: GitBucket failed to restart after 60 attempts." >&2
+        exit 1
+      fi
