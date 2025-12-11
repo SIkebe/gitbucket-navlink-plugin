@@ -10,7 +10,7 @@
   },
   "keywords": ["e2e", "testing", "gitbucket", "playwright"],
   "author": "sikebe",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "devDependencies": {
     "@playwright/test": "^1.48.0",
     "@types/node": "^20.17.0",
