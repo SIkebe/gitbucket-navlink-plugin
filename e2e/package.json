@@ -9,7 +9,7 @@
     "test:ui": "playwright test --ui"
   },
   "keywords": ["e2e", "testing", "gitbucket", "playwright"],
-  "author": "",
+  "author": "sikebe",
   "license": "Apache-2.0",
   "devDependencies": {
     "@playwright/test": "^1.48.0",

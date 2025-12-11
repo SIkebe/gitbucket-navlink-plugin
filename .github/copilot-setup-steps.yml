@@ -1,22 +1,15 @@
-name: GitBucket NavLink Plugin Setup
-description: Setup steps for developing the GitBucket NavLink plugin
-
-steps:
-  - name: Install SBT (Scala Build Tool)
-    run: |
-      # Install SBT 1.6.2 which is required for this project
-      # Using official SBT release from GitHub
-      # For production use, consider using package managers like apt or sdkman for better security
-      SBT_VERSION=1.6.2
-      curl -L "https://github.com/sbt/sbt/releases/download/v${SBT_VERSION}/sbt-${SBT_VERSION}.tgz" | tar xz -C /tmp
-      echo 'export PATH=/tmp/sbt/bin:$PATH' >> ~/.bashrc
-      export PATH=/tmp/sbt/bin:$PATH
-      
-      # Verify installation
+setup_steps:
+  - name: Install SBT using apt
+    bash: |
+      echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | sudo tee /etc/apt/sources.list.d/sbt.list
+      echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | sudo tee /etc/apt/sources.list.d/sbt_old.list
+      curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo apt-key add
+      sudo apt-get update
+      sudo apt-get install -y sbt
       sbt --version
 
   - name: Start Docker Compose Services
-    run: |
+    bash: |
       cd "${GITHUB_WORKSPACE:-$(pwd)}"
       
       # Create plugins directory before starting Docker to avoid permission issues
@@ -37,7 +30,7 @@ steps:
       done
 
   - name: Setup Environment Variables
-    run: |
+    bash: |
       cd "${GITHUB_WORKSPACE:-$(pwd)}"
       
       # Set GITBUCKET_HOME environment variable
@@ -45,7 +38,7 @@ steps:
       export GITBUCKET_HOME=$(pwd)/docker
 
   - name: Install E2E Test Dependencies
-    run: |
+    bash: |
       cd "${GITHUB_WORKSPACE:-$(pwd)}/e2e"
       
       # Install Node.js dependencies
@@ -55,9 +48,8 @@ steps:
       npx playwright install chromium --with-deps
 
   - name: Build and Install Plugin
-    run: |
+    bash: |
       cd "${GITHUB_WORKSPACE:-$(pwd)}"
-      export PATH=/tmp/sbt/bin:$PATH
       export GITBUCKET_HOME=$(pwd)/docker
       
       # Build the plugin
@@ -78,7 +70,3 @@ steps:
         fi
         sleep 5
       done
-
-environment:
-  GITBUCKET_HOME: ${GITHUB_WORKSPACE:-$(pwd)}/docker
-  PATH: /tmp/sbt/bin:$PATH
