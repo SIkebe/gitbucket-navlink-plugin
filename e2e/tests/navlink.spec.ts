@@ -88,9 +88,7 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
     // Note: The actual selector depends on how GitBucket renders the menu
     // This is a generic check that would need adjustment based on actual HTML structure
     const navLink = page.locator(`a:has-text("${menuName}")`);
-    if (await navLink.count() > 0) {
-      await expect(navLink.first()).toBeVisible();
-    }
+    await expect(navLink.first()).toBeVisible();
   });
 
   test('should validate required fields in NavLink settings', async ({ page }) => {
