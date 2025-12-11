@@ -101,10 +101,25 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
     // Try to submit empty form
     await page.locator('input[type="submit"]').click();
     
-    // Form should have validation preventing submission or showing errors
-    // The exact behavior depends on the form validation implementation
+    // Check that validation prevents submission:
+    // 1. URL should still be on settings page (not redirected)
     const currentUrl = page.url();
     await expect(currentUrl).toContain('/navlink/settings');
+    
+    // 2. Check for validation error message or alert
+    // The form should either show an error message or use HTML5 validation
+    const errorMessage = page.locator('.alert-error, .alert-danger, .error');
+    const hasErrorMessage = await errorMessage.count() > 0;
+    
+    // 3. Check if HTML5 validation is being used (fields should have required attribute)
+    const nameField = page.locator('input[name="globalMenuName"]');
+    const pathField = page.locator('input[name="globalMenuPath"]');
+    
+    // At least one validation mechanism should be present
+    const nameRequired = await nameField.evaluate((el: HTMLInputElement) => el.hasAttribute('required'));
+    const pathRequired = await pathField.evaluate((el: HTMLInputElement) => el.hasAttribute('required'));
+    
+    expect(hasErrorMessage || nameRequired || pathRequired).toBeTruthy();
   });
 
   test('should persist NavLink settings across page reloads', async ({ page }) => {
