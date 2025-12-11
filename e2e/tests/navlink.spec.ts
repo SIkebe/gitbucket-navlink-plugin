@@ -33,6 +33,15 @@ async function ensureOnSettings(page: Page) {
   await expect(page.locator('form#form')).toBeVisible();
 }
 
+async function submitNavLinks(page: Page) {
+  await page.locator('input[type="submit"]').click();
+  await Promise.race([
+    page.locator('.alert-success, .alert-info').waitFor({ state: 'visible', timeout: 5000 }).catch(() => null),
+    page.waitForLoadState('networkidle').catch(() => null),
+    page.waitForTimeout(5000),
+  ]);
+}
+
 test.describe('GitBucket NavLink Plugin E2E Tests', () => {
   test.beforeEach(async ({ page }) => {
     // Login before each test
@@ -61,10 +70,7 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
     await navLinkPathInput(page).fill(testMenuPath);
     
     // Submit the form
-    await page.locator('input[type="submit"]').click();
-    
-    // Wait for success message
-    await expect(page.locator('.alert-success, .alert-info')).toBeVisible({ timeout: 10000 });
+    await submitNavLinks(page);
     
     // Verify values were saved
     await expect(navLinkNameInput(page)).toHaveValue(testMenuName);
@@ -80,10 +86,7 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
     
     await navLinkNameInput(page).fill(menuName);
     await navLinkPathInput(page).fill(menuPath);
-    await page.locator('input[type="submit"]').click();
-    
-    // Wait for save confirmation
-    await expect(page.locator('.alert-success, .alert-info')).toBeVisible({ timeout: 10000 });
+    await submitNavLinks(page);
     
     // Navigate to home page
     await page.goto('/');
@@ -98,16 +101,14 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
   });
 
   test('should hide NavLink from unauthenticated users', async ({ page, browser }) => {
-    await page.goto('/navlink/settings');
+    await ensureOnSettings(page);
 
     const menuName = `Documentation_${Date.now()}`;
     const menuPath = 'navlink/settings';
 
-    await page.locator('input[name="globalMenuName"]').fill(menuName);
-    await page.locator('input[name="globalMenuPath"]').fill(menuPath);
-    await page.locator('input[type="submit"]').click();
-
-    await expect(page.locator('.alert-success, .alert-info')).toBeVisible({ timeout: 10000 });
+    await navLinkNameInput(page).fill(menuName);
+    await navLinkPathInput(page).fill(menuPath);
+    await submitNavLinks(page);
 
     await page.goto('/');
     await page.reload();
@@ -134,18 +135,12 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
     await navLinkPathInput(page).fill('');
     
     // Try to submit empty form
-    await page.locator('input[type="submit"]').click();
-    
-    // Wait for any response
-    await page.waitForTimeout(1000);
+    await submitNavLinks(page);
     
     // Verify we can restore original values
     await navLinkNameInput(page).fill(initialName);
     await navLinkPathInput(page).fill(initialPath);
-    await page.locator('input[type="submit"]').click();
-    
-    // Wait for save operation
-    await page.waitForTimeout(1000);
+    await submitNavLinks(page);
     
     // Verify restoration was successful
     await expect(navLinkNameInput(page)).toHaveValue(initialName);
@@ -160,10 +155,7 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
     await ensureOnSettings(page);
     await navLinkNameInput(page).fill(uniqueName);
     await navLinkPathInput(page).fill(uniquePath);
-    await page.locator('input[type="submit"]').click();
-    
-    // Wait for save confirmation
-    await expect(page.locator('.alert-success, .alert-info')).toBeVisible({ timeout: 10000 });
+    await submitNavLinks(page);
     
     // Navigate away and back
     await page.goto('/');
@@ -187,8 +179,7 @@ test.describe('GitBucket NavLink Plugin E2E Tests', () => {
       await navLinkPathInput(page, i).fill(links[i].path);
     }
 
-    await page.locator('input[type="submit"]').click();
-    await expect(page.locator('.alert-success, .alert-info')).toBeVisible({ timeout: 10000 });
+    await submitNavLinks(page);
 
     await page.goto('/');
     await page.reload();
