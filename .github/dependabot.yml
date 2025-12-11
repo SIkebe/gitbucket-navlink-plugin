@@ -6,7 +6,7 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
   target-branch: develop
-- package-ecosystem: docker
+- package-ecosystem: docker-compose
   directory: "/"
   schedule:
     interval: daily
