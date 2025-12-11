@@ -4,7 +4,7 @@ This directory contains end-to-end tests for the GitBucket NavLink Plugin using 
 
 ## Prerequisites
 
-- Node.js 18 or higher
+- Node.js 24
 - Docker and Docker Compose
 - GitBucket instance running on http://localhost:8080
 
