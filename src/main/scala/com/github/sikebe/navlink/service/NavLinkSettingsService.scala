@@ -14,9 +14,10 @@ trait NavLinkSettingsService {
     val props = new java.util.Properties()
     val navlinks = sanitize(settings.navLinks)
     props.setProperty(NavLinkCount, navlinks.size.toString)
-    navlinks.zipWithIndex.foreach { case (navlink, index) =>
-      props.setProperty(s"$GlobalMenuNamePrefix$index", navlink.globalMenuName)
-      props.setProperty(s"$GlobalMenuPathPrefix$index", navlink.globalMenuPath)
+    navlinks.zipWithIndex.foreach {
+      case (navlink, index) =>
+        props.setProperty(s"$GlobalMenuNamePrefix$index", navlink.globalMenuName)
+        props.setProperty(s"$GlobalMenuPathPrefix$index", navlink.globalMenuPath)
     }
     Using.resource(new java.io.FileOutputStream(NavLinkConf)) { out => props.store(out, null) }
   }
@@ -45,7 +46,9 @@ object NavLinkSettingsService {
 
   def sanitize(navLinks: Seq[NavLinkItem]): Seq[NavLinkItem] = {
     navLinks
-      .map(navLink => navLink.copy(globalMenuName = navLink.globalMenuName.trim, globalMenuPath = navLink.globalMenuPath.trim))
+      .map(navLink =>
+        navLink.copy(globalMenuName = navLink.globalMenuName.trim, globalMenuPath = navLink.globalMenuPath.trim)
+      )
       .filter(navLink => navLink.globalMenuName.nonEmpty && navLink.globalMenuPath.nonEmpty)
       .take(MaxNavLinks)
   }
