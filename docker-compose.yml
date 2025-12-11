@@ -19,7 +19,7 @@ services:
     command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; sleep 10; java -jar /opt/gitbucket.war'
 
   db:
-    image: postgres:14.0-alpine
+    image: postgres:18.1-alpine
     restart: always
     ports:
       - "5432:5432"
