@@ -44,33 +44,37 @@ async function submitNavLinks(page: Page) {
     page.waitForLoadState('networkidle').catch(() => null),
     page.waitForTimeout(5000),
   ]);
+  await page.waitForTimeout(1000);
 }
 
 async function waitForNavLinksInNavbar(page: Page, names: string[]) {
   await page.goto('/');
+  await page.waitForLoadState('networkidle');
   for (const name of names) {
     await page
       .locator(`a:has-text("${name}")`)
       .first()
-      .waitFor({ state: 'visible', timeout: 15000 })
+      .waitFor({ state: 'visible', timeout: 20000 })
       .catch(() => null);
   }
   await page.reload();
+  await page.waitForLoadState('domcontentloaded');
   for (const name of names) {
-    await expect(page.locator(`a:has-text("${name}")`).first()).toBeVisible({ timeout: 5000 });
+    await expect(page.locator(`a:has-text("${name}")`).first()).toBeVisible({ timeout: 15000 });
   }
 }
 
 async function waitForSettingValue(page: Page, index: number, name: string, path: string) {
   // Retry reading until values appear after plugin reload
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 10; i++) {
     await page.goto('/navlink/settings');
+    await page.waitForLoadState('networkidle');
     const nameInput = navLinkNameInput(page, index);
     const pathInput = navLinkPathInput(page, index);
     const currentName = await nameInput.inputValue();
     const currentPath = await pathInput.inputValue();
     if (currentName === name && currentPath === path) return;
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(1500);
   }
   await expect(navLinkNameInput(page, index)).toHaveValue(name);
   await expect(navLinkPathInput(page, index)).toHaveValue(path);

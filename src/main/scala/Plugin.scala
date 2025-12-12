@@ -22,13 +22,12 @@ class Plugin extends gitbucket.core.plugin.Plugin with NavLinkSettingsService {
   )
 
   override val globalMenus =
-    (0 until MaxNavLinks).map { index =>
-      (context: Context) =>
-        context.loginAccount.flatMap { _ =>
-          loadNavLinkSettings().navLinks.lift(index).map { navLink =>
-            Link(s"navlink-$index", navLink.globalMenuName, navLink.globalMenuPath)
-          }
+    (0 until MaxNavLinks).map { index => (context: Context) =>
+      context.loginAccount.flatMap { _ =>
+        loadNavLinkSettings().navLinks.lift(index).map { navLink =>
+          Link(s"navlink-$index", navLink.globalMenuName, navLink.globalMenuPath)
         }
+      }
     }
 
   override val systemSettingMenus = Seq((_: Context) => Some(Link("navlink", "NavLink", "navlink/settings")))
