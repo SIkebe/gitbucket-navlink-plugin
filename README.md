@@ -13,6 +13,10 @@ Plugin version | GitBucket version
 
 ## Development
 
+### Dev Containers / Codespaces
+
+Open the repository in VS Code Dev Containers or GitHub Codespaces to use the preconfigured `.devcontainer/devcontainer.json` image (Java 17, sbt, Node.js, Docker). After attaching to the container, start GitBucket and PostgreSQL with `docker compose up -d` from the workspace root if needed.
+
 ### GitHub Copilot
 
 This project includes a `.github/copilot-setup-steps.yml` file that automatically sets up the development environment when using GitHub Copilot Coding Agent. The setup includes:

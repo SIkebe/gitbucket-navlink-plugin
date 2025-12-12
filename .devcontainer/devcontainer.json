@@ -1,0 +1,30 @@
+{
+  "name": "gitbucket-navlink-plugin",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "17"
+    },
+    "ghcr.io/devcontainers/features/sbt:1": {},
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "containerEnv": {
+    "GITBUCKET_HOME": "${containerWorkspaceFolder}/docker"
+  },
+  "forwardPorts": [
+    8080,
+    5432
+  ],
+  "postCreateCommand": "sbt update",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "scala-lang.scala",
+        "ms-playwright.playwright"
+      ]
+    }
+  }
+}
