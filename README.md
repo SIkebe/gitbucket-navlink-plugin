@@ -19,7 +19,7 @@ Open the repository in VS Code Dev Containers or GitHub Codespaces to use the pr
 
 ### GitHub Copilot
 
-This project includes a `.github/copilot-setup-steps.yml` file that automatically sets up the development environment when using GitHub Copilot Coding Agent. The setup includes:
+This project includes a `.github/workflows/copilot-setup-steps.yml` file that automatically sets up the development environment when using GitHub Copilot Coding Agent. The setup includes:
 - Installing SBT (Scala Build Tool)
 - Starting Docker Compose services (GitBucket + PostgreSQL)
 - Setting up environment variables
