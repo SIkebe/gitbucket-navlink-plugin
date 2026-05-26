@@ -1,6 +1,8 @@
-@(name: String, path: String, isAdmin: Boolean, info: Option[Any])(implicit context: gitbucket.core.controller.Context)
+@import com.github.sikebe.navlink.service.NavLinkSettingsService.NavLinkItem
+@(navlinks: Seq[NavLinkItem], maxLinks: Int, isAdmin: Boolean, info: Option[Any])(implicit context: gitbucket.core.controller.Context)
 @gitbucket.core.html.main("NavLink Setting", None){
 @sikebe.gitbucket.navlink.html.sidebar("settings", isAdmin){
+@defining(navlinks.padTo(maxLinks, NavLinkItem("", ""))) { rows =>
 <div class="content-wrapper">
     <div class="content body">
         @gitbucket.core.helper.html.information(info)
@@ -8,14 +10,17 @@
             <div class="panel panel-default">
                 <div class="panel-heading strong">Settings for NavLink</div>
                 <div class="panel-body">
-                    <fieldset class="form-group">
-                        <label for="globalMenuName" class="strong">Global Menu Name:</label>
-                        <input type="text" name="globalMenuName" id="globalMenuName" class="form-control" value="@name"/>
-                    </fieldset>
-                    <fieldset class="border-top form-group">
-                        <label for="globalMenuPath" class="strong">Relative Path (e.g. <code>navlink/settings</code>):</label>
-                        <input type="text" name="globalMenuPath" id="globalMenuPath" class="form-control" value="@path"/>
-                    </fieldset>
+                    <p class="text-muted">You can register up to @maxLinks navlinks. Leave a row empty to remove it.</p>
+                    @for((navlink, index) <- rows.zipWithIndex) {
+                        <fieldset class="form-group">
+                            <label class="strong" for="@{s"navlinks[$index].globalMenuName"}">Global Menu Name @if(rows.size > 1){@{index + 1}}:</label>
+                            <input type="text" name="@{s"navlinks[$index].globalMenuName"}" id="@{s"navlinks[$index].globalMenuName"}" class="form-control" value="@navlink.globalMenuName"/>
+                        </fieldset>
+                        <fieldset class="border-top form-group">
+                            <label class="strong" for="@{s"navlinks[$index].globalMenuPath"}">Relative Path (e.g. <code>navlink/settings</code>):</label>
+                            <input type="text" name="@{s"navlinks[$index].globalMenuPath"}" id="@{s"navlinks[$index].globalMenuPath"}" class="form-control" value="@navlink.globalMenuPath"/>
+                        </fieldset>
+                    }
                     <div class="align-right" style="margin-top: 20px;">
                         <input type="submit" class="btn btn-success" value="Apply changes"/>
                     </div>
@@ -25,3 +30,4 @@
     </div>
 </div>
 }}
+}
