@@ -18,3 +18,9 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
   target-branch: develop
+- package-ecosystem: sbt
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  target-branch: develop
