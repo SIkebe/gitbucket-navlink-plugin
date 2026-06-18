@@ -18,7 +18,7 @@ jobs:
         uses: sbt/setup-sbt@v1
 
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Submit Dependency Graph
         uses: scalacenter/sbt-dependency-graph-action@d84eef4c09e633bcf5f113bcad7fd5e9af1baee9 # v3.2.3
