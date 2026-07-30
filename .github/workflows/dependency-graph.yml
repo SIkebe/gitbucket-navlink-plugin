@@ -15,7 +15,7 @@ jobs:
       contents: write # this permission is needed to submit the dependency graph
     steps:
       - name: Setup sbt launcher
-        uses: sbt/setup-sbt@v1
+        uses: sbt/setup-sbt@v1.5.4
 
       - name: Checkout code
         uses: actions/checkout@v7
