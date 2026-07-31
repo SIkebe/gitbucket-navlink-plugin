@@ -21,7 +21,7 @@ jobs:
         distribution: temurin
 
     - name: Setup sbt launcher
-      uses: sbt/setup-sbt@v1.5.4
+      uses: sbt/setup-sbt@v1.5.5
 
     - name: Build plugin
       run: sbt assembly
