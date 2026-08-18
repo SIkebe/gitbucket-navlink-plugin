@@ -44,10 +44,10 @@ jobs:
             exit 0
           fi
 
-          latest_milestone=$(gh api --paginate --slurp \
+          latest_milestone=$(gh api --paginate \
             -H "X-GitHub-Api-Version: 2026-03-10" \
             "repos/${GITHUB_REPOSITORY}/milestones?state=open&per_page=100" \
-            --jq '[.[][]] | max_by(.number) | .number // empty')
+            --jq '.[].number' | sort -n | tail -n 1)
 
           if [[ -z "${latest_milestone}" ]]; then
             echo "No open milestones are available."
