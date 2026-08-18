@@ -1,6 +1,7 @@
 name: Manage pull request milestone
 
 on:
+  # pull_request_target is required so milestone updates also work for PRs from forks.
   pull_request_target:
     types: [opened, closed]
 
