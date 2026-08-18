@@ -1,0 +1,47 @@
+name: Assign latest milestone
+
+on:
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  assign-milestone:
+    if: ${{ github.event.pull_request.milestone == null }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign latest open milestone
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          current_milestone=$(gh api \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}" \
+            --jq '.milestone.number // empty')
+
+          if [[ -n "${current_milestone}" ]]; then
+            echo "PR #${PR_NUMBER} already has milestone #${current_milestone}."
+            exit 0
+          fi
+
+          latest_milestone=$(gh api --paginate --slurp \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "repos/${GITHUB_REPOSITORY}/milestones?state=open&per_page=100" \
+            --jq '[.[][]] | max_by(.number) | .number // empty')
+
+          if [[ -z "${latest_milestone}" ]]; then
+            echo "No open milestones are available."
+            exit 0
+          fi
+
+          gh api --method PATCH \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}" \
+            -F milestone="${latest_milestone}"
+
+          echo "Assigned milestone #${latest_milestone} to PR #${PR_NUMBER}."
