@@ -2,7 +2,10 @@ name: Manage pull request milestone
 
 on:
   pull_request:
-    types: [opened, closed]
+    types: [opened, reopened, closed]
+  # Dependabot pull_request workflows receive a read-only token.
+  pull_request_target:
+    types: [opened, reopened, closed]
 
 permissions:
   issues: write
@@ -11,7 +14,12 @@ jobs:
   manage-milestone:
     if: >-
       github.event.pull_request.head.repo.full_name == github.repository &&
-      ((github.event.action == 'opened' &&
+      ((github.event_name == 'pull_request' &&
+      github.event.pull_request.user.login != 'dependabot[bot]') ||
+      (github.event_name == 'pull_request_target' &&
+      github.event.pull_request.user.login == 'dependabot[bot]')) &&
+      (((github.event.action == 'opened' ||
+      github.event.action == 'reopened') &&
       github.event.pull_request.milestone == null) ||
       (github.event.action == 'closed' &&
       github.event.pull_request.merged == false &&
@@ -19,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Assign latest open milestone
-        if: ${{ github.event.action == 'opened' }}
+        if: ${{ github.event.action == 'opened' || github.event.action == 'reopened' }}
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
