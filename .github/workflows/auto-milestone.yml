@@ -1,7 +1,7 @@
 name: Manage pull request milestone
 
 on:
-  # pull_request_target is required so milestone updates also work for PRs from forks.
+  # Use pull_request_target for milestone write permissions.
   pull_request_target:
     types: [opened, closed]
 
@@ -11,11 +11,12 @@ permissions:
 jobs:
   manage-milestone:
     if: >-
-      (github.event.action == 'opened' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      ((github.event.action == 'opened' &&
       github.event.pull_request.milestone == null) ||
       (github.event.action == 'closed' &&
       github.event.pull_request.merged == false &&
-      github.event.pull_request.milestone != null)
+      github.event.pull_request.milestone != null))
     runs-on: ubuntu-latest
     steps:
       - name: Assign latest open milestone
