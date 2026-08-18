@@ -1,0 +1,77 @@
+name: Manage pull request milestone
+
+on:
+  pull_request:
+    types: [opened, reopened, closed]
+  # Dependabot pull_request workflows receive a read-only token.
+  pull_request_target:
+    types: [opened, reopened, closed]
+
+permissions:
+  issues: write
+
+jobs:
+  manage-milestone:
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      ((github.event_name == 'pull_request' &&
+      github.event.pull_request.user.login != 'dependabot[bot]') ||
+      (github.event_name == 'pull_request_target' &&
+      github.event.pull_request.user.login == 'dependabot[bot]')) &&
+      (((github.event.action == 'opened' ||
+      github.event.action == 'reopened') &&
+      github.event.pull_request.milestone == null) ||
+      (github.event.action == 'closed' &&
+      github.event.pull_request.merged == false &&
+      github.event.pull_request.milestone != null))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign latest open milestone
+        if: ${{ github.event.action == 'opened' || github.event.action == 'reopened' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          current_milestone=$(gh api \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}" \
+            --jq '.milestone.number // empty')
+
+          if [[ -n "${current_milestone}" ]]; then
+            echo "PR #${PR_NUMBER} already has milestone #${current_milestone}."
+            exit 0
+          fi
+
+          latest_milestone=$(gh api --paginate --slurp \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "repos/${GITHUB_REPOSITORY}/milestones?state=open&per_page=100" \
+            --jq '[.[][]] | max_by(.number) | .number // empty')
+
+          if [[ -z "${latest_milestone}" ]]; then
+            echo "No open milestones are available."
+            exit 0
+          fi
+
+          gh api --method PATCH \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}" \
+            -F milestone="${latest_milestone}"
+
+          echo "Assigned milestone #${latest_milestone} to PR #${PR_NUMBER}."
+
+      - name: Remove milestone from unmerged PR
+        if: ${{ github.event.action == 'closed' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          gh api --method PATCH \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}" \
+            --input - <<< '{"milestone":null}'
+
+          echo "Removed milestone from unmerged PR #${PR_NUMBER}."
