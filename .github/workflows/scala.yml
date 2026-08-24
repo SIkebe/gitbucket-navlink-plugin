@@ -23,7 +23,7 @@ jobs:
         distribution: temurin
 
     - name: Setup sbt launcher
-      uses: sbt/setup-sbt@v1.5.7
+      uses: sbt/setup-sbt@v1.5.8
 
     - name: Run Docker containers
       run: |
@@ -46,7 +46,7 @@ jobs:
         distribution: temurin
 
     - name: Setup sbt launcher
-      uses: sbt/setup-sbt@v1.5.7
+      uses: sbt/setup-sbt@v1.5.8
 
     - name: Run Docker containers
       run: |
