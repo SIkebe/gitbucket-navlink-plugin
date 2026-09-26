@@ -27,7 +27,7 @@ trait NavLinkSettingsControllerBase extends ControllerBase {
     html.settings(settings.globalMenuName, settings.globalMenuPath, isAdmin = true, flash.get("info"))
   })
 
-  post("/navlink/settings", settingsForm)(adminOnly { form =>
+  post("/navlink/settings", settingsForm)(adminOnlyWithForm { form =>
     assert(form.globalMenuName != null)
     assert(!form.globalMenuName.isEmpty)
     assert(form.globalMenuPath != null)
