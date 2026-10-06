@@ -1,2 +1,2 @@
-addSbtPlugin("io.github.gitbucket" % "sbt-gitbucket-plugin" % "1.5.1")
+addSbtPlugin("io.github.gitbucket" % "sbt-gitbucket-plugin" % "1.7.0")
 addSbtPlugin("org.scalameta"       % "sbt-scalafmt"         % "2.6.2")
