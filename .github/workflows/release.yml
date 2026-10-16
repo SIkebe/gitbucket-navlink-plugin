@@ -12,7 +12,7 @@ jobs:
       contents: write
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.1
 
     - name: Set up JDK
       uses: actions/setup-java@v6.0.1
@@ -27,7 +27,7 @@ jobs:
       run: sbt assembly
 
     - name: Create Release
-      uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+      uses: softprops/action-gh-release@v3.0.3
       with:
         name: ${{ github.ref_name }}
         generate_release_notes: true
