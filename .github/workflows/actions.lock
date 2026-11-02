@@ -6,22 +6,22 @@ workflows:
     '.github/workflows/auto-milestone.yml': []
     '.github/workflows/copilot-setup-steps.yml':
         - 'actions/checkout@v7.0.1'
-        - 'sbt/setup-sbt@v1.5.12'
+        - 'sbt/setup-sbt@v1.5.13'
     '.github/workflows/dependency-graph.yml':
         - 'actions/checkout@v7.0.1'
-        - 'sbt/setup-sbt@v1.5.12'
+        - 'sbt/setup-sbt@v1.5.13'
         - 'scalacenter/sbt-dependency-submission@v3.2.3'
     '.github/workflows/release.yml':
         - 'actions/checkout@v7.0.1'
         - 'actions/setup-java@v6.1.0'
-        - 'sbt/setup-sbt@v1.5.12'
+        - 'sbt/setup-sbt@v1.5.13'
         - 'softprops/action-gh-release@v3.0.3'
     '.github/workflows/scala.yml':
         - 'actions/checkout@v7.0.1'
         - 'actions/setup-java@v6.1.0'
         - 'actions/setup-node@v7.1.0'
         - 'actions/upload-artifact@v7.0.2'
-        - 'sbt/setup-sbt@v1.5.12'
+        - 'sbt/setup-sbt@v1.5.13'
 dependencies:
     'actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9':
         ref: 'v6.1.0'
@@ -80,9 +80,9 @@ dependencies:
         repo_id: 941189561
         uses:
             - 'carabiner-dev/actions@2fec8bd8e1dcfdea26080648070b4827f1fa0584'
-    'sbt/setup-sbt@v1.5.12':
-        ref: 'v1.5.12'
-        commit: 'sha1-ecad189dd245444b9ae0a0cd5922fd938b88906f'
+    'sbt/setup-sbt@v1.5.13':
+        ref: 'v1.5.13'
+        commit: 'sha1-b113b960ba361e87e08ce02a390d51871b7ee459'
         owner_id: 1158012
         repo_id: 818716839
         uses:
